@@ -1,6 +1,5 @@
 # 趣味のプログラミング
 <head>
-  <title>このページの説明</title>
   <link rel="icon" type="image/png" href="mainicon.png">
 <link rel="apple-touch-icon" href="mainicon.png">
 </head>
