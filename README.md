@@ -4,4 +4,4 @@
 <link rel="apple-touch-icon" href="mainicon.png">
 </head>
 なんか適当に趣味で作ってるプログラミングです。
-<br><a href="https://nonbiri0110.github.io/syumi/main">メインページはこれをクリック</a>
+<br><a href="https://nonbiri0220.github.io/syumi/main">メインページはこれをクリック</a>
