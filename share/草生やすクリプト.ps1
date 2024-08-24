@@ -1,0 +1,2 @@
+Add-Type -AssemblyName System.Windows.Forms
+$result = [System.Windows.Forms.MessageBox]::Show("ëê","ëê","ok","information","Button1")
