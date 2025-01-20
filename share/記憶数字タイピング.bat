@@ -1,0 +1,197 @@
+@echo off
+title 記憶数字タイピング
+set acount=0
+set mcount=0
+set ascore=0
+set mscore=0
+set thround=0
+set round=10
+
+:title
+title 記憶数字タイピング - タイトル
+cls
+echo 記憶数字タイピング Ver.0.5.1
+echo 操作:start:ゲームをスタートする
+echo      settings:設定を開く
+echo      info:このゲームの説明
+echo      score:現在の合計正解数、不正解数を表示
+echo      exit:ゲームを終了する
+echo 現在のラウンド設定数は%round%です
+set select=入力されていません
+set /p select=操作を入力してね:
+if %select%==start (
+goto start
+) else if %select%==exit (
+exit
+) else if %select%==settings (
+goto settings
+) else if %select%==info (
+goto info
+) else if %select%==score (
+goto score
+) else (
+echo 表示された操作のどれかを入力してください。
+echo 3秒後に自動的にタイトル画面に戻ります…
+timeout /t 3 /nobreak >nul
+goto title
+)
+
+:score
+cls
+title 記憶数字タイピング - 現在の合計正解数、不正解数
+echo 現在の合計正解数:%ascore%
+echo 現在の合計不正解数:%mscore%
+echo;
+echo タイトル画面に戻るには何かキーを押してください。
+pause >nul
+goto title
+
+:info
+cls
+title 記憶数字タイピング - 説明
+echo このゲームについて:
+echo 一瞬だけ出てくる数字を覚えて打つゴミタイピングゲームです。
+echo;
+echo 設定について:
+echo このゲームの設定はゲームを閉じるたびにリセットされます。
+echo;
+echo ラウンドについて:
+echo 何回やったらリザルトで中断するかの設定です。
+echo ラウンドが10の場合、10回やると
+echo;
+echo 操作:next:続ける
+echo      exit:タイトル画面に戻る
+echo 操作を入力してください:
+echo;
+echo このような画面が出てきます。
+echo;
+echo タイトル画面に戻るには何かキーを押してください。
+pause >nul
+goto title
+
+:settings
+cls
+title 記憶数字タイピング - 設定
+echo 設定
+echo 操作:round:1ラウンド何回やるか。デフォルトは10。
+echo      exit:タイトル画面に戻る
+set sselect=入力されていません
+set /p sselect=操作を入力:
+if %sselect%==round (
+goto roundsettings
+) else if %sselect%==exit (
+goto title
+) else (
+echo 表示された操作のどれかを入力してください。
+echo 3秒後に自動的に設定画面に戻ります…
+timeout /t 3 /nobreak >nul
+goto settings
+)
+
+:roundsettings
+cls
+title 記憶数字タイピング - 設定 - ラウンド数設定
+echo 現在のラウンド設定数は%round%です
+echo 注意:半角数字以外を入力すると、無限にゲームが続きます。
+set /p round=ラウンド数を数字で入力してね:
+goto settings
+
+:start
+title 記憶数字タイピング - 準備はいい?
+cls
+echo 3
+timeout /t 1 /nobreak >nul
+cls
+echo 2
+timeout /t 1 /nobreak >nul
+cls
+echo 1
+timeout /t 1 /nobreak >nul
+cls
+echo スタート!
+timeout /t 1 /nobreak >nul
+cls
+goto set
+
+:set
+set acount=0
+set mcount=0
+set thround=0
+goto game
+
+:game
+cls
+set /a thround+=1
+title 記憶数字タイピング - 入力 -ラウンド%thround%
+set suuti=%random%
+echo %suuti%
+timeout /t 1 /nobreak >nul
+cls
+set inpu=入力されていません
+set /p inpu=入力してね:
+if %inpu%==%suuti% (
+set /a acount+=1
+set /a ascore+=1
+goto core
+) else (
+set /a mcount+=1
+set /a mscore+=1
+goto miss
+)
+
+:core
+title 記憶数字タイピング - リザルト
+cls
+set ache=core
+echo 正解!
+echo あなたの答え(正解):%inpu%
+echo 現在の正解数:%acount% 現在の不正解数:%mcount%
+if %thround%==%round% (
+goto che
+) else (
+echo 3秒後に再開します…
+timeout /t 3 /nobreak >nul
+goto game
+)
+
+:miss
+title 記憶数字タイピング - リザルト
+cls
+set ache=miss
+echo 不正解!
+echo 正解は%suuti%です
+echo あなたの答え:%inpu%
+echo 現在の正解数:%acount% 現在の不正解数:%mcount%
+if %thround%==%round% (
+goto che
+) else (
+echo 3秒後に再開します…
+timeout /t 3 /nobreak >nul
+goto game
+)
+
+:che
+echo 操作:next:続ける
+echo      exit:タイトル画面に戻る
+set nexche=入力されていません
+set /p nexche=操作を入力してください:
+goto ncheck
+
+:ncheck
+if %nexche%==next (
+set thround=0
+echo 3秒後に再開します…
+timeout /t 3 /nobreak >nul
+goto set
+) else if %nexche%==exit (
+goto title
+) else (
+echo 表示された操作のどれかを入力してください。
+echo 3秒後に自動的にリザルト画面に戻ります…
+timeout /t 3 /nobreak >nul
+if %ache%==core (
+goto core
+) else if %ache%==miss (
+goto miss
+)
+)
