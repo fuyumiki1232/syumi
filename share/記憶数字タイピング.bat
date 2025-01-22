@@ -1,4 +1,6 @@
 @echo off
+
+:first
 title 記憶数字タイピング
 set acount=0
 set mcount=0
@@ -6,15 +8,19 @@ set ascore=0
 set mscore=0
 set thround=0
 set round=10
+set folderpath=%~dp0
 
 :title
 title 記憶数字タイピング - タイトル
 cls
-echo 記憶数字タイピング Ver.0.5.1
+echo 記憶数字タイピング Ver.0.6.2
 echo 操作:start:ゲームをスタートする
 echo      settings:設定を開く
 echo      info:このゲームの説明
 echo      score:現在の合計正解数、不正解数を表示
+echo      save:現在の進行状況をセーブする
+echo      load:ファイルから設定をロードする
+echo      reset:現在のスコア、設定をすべてリセットします。
 echo      exit:ゲームを終了する
 echo 現在のラウンド設定数は%round%です
 set select=入力されていません
@@ -29,10 +35,69 @@ goto settings
 goto info
 ) else if %select%==score (
 goto score
+) else if %select%==save (
+goto save
+) else if %select%==load (
+goto load
+) else if %select%==reset (
+goto reset
 ) else (
 echo 表示された操作のどれかを入力してください。
 echo 3秒後に自動的にタイトル画面に戻ります…
 timeout /t 3 /nobreak >nul
+goto title
+)
+
+:reset
+cls
+echo 警告:セーブしていない内容は失われます。
+echo 本当にスコアをリセットしますか(yes/no)?
+set scorese=入力されていません
+set /p scorese=
+if %scorese%==yes (
+goto first
+) else if %scorese%==no (
+goto title
+) else (
+echo 表示された操作のどれかを入力してください。
+echo 3秒後に自動的にリセット画面に戻ります…
+timeout /t 3 /nobreak >nul
+goto reset
+)
+
+:save
+title 記憶数字タイピング - セーブ
+cls
+cd %folderpath%
+if not exist %folderpath%kiosuusada\ (
+md kiosuusada
+)
+cd kiosuusada
+if exist save.txt (
+del save.txt
+)
+powershell add-content -path %folderpath%kiosuusada\save.txt -value "%ascore%,%mscore%,%round%"
+echo セーブが完了しました。
+echo タイトル画面に戻るには何かキーを押してください。
+pause >nul
+goto title
+
+:load
+title 記憶数字タイピング - ロード
+cls
+if exist "%folderpath%kiosuusada\save.txt" (
+cd %folderpath%kiosuusada\
+for /f "usebackq" %%t in (`"powershell (get-content "%folderpath%kiosuusada\save.txt")[0]"`) do set ascore=%%t
+for /f "usebackq" %%t in (`"powershell (get-content "%folderpath%kiosuusada\save.txt")[1]"`) do set mscore=%%t
+for /f "usebackq" %%t in (`"powershell (get-content "%folderpath%kiosuusada\save.txt")[2]"`) do set round=%%t
+echo ロードが完了しました。
+echo タイトル画面に戻るには何かキーを押してください。
+pause >nul
+goto title
+) else (
+echo セーブファイルが存在しません。
+echo タイトル画面に戻るには何かキーを押してください。
+pause >nul
 goto title
 )
 
@@ -64,6 +129,13 @@ echo      exit:タイトル画面に戻る
 echo 操作を入力してください:
 echo;
 echo このような画面が出てきます。
+echo;
+echo セーブ/ロードについて:
+echo 現在のスコア、設定をセーブ/ロードできます。
+echo 保存場所はこのファイルがある場所の"kiosuudata"フォルダに保存されます。
+echo;
+echo リセットについて:
+echo 現在のスコア、設定をすべて初期状態に戻します。
 echo;
 echo タイトル画面に戻るには何かキーを押してください。
 pause >nul
